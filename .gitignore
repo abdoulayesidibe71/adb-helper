@@ -1,0 +1,34 @@
+# Node modules
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Fichiers de dépendances et de cache
+package-lock.json
+yarn.lock
+
+# Répertoires spécifiques à l'éditeur
+.idea/
+.vscode/
+
+# Cache de la compilation TypeScript
+dist/
+
+# Dossier de build pour les projets avec des outils de bundling comme Webpack
+build/
+
+# Dossier de configuration de la IDE
+.DS_Store
+
+# Fichiers spécifiques à la plateforme
+*.swp
+*.swo
+
+# Dossiers temporaires
+tmp/
+temp/
