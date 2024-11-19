@@ -14,8 +14,8 @@ import { UIAttributes } from './UIAttributes';
  * @extends ADB
  * @example
  * const adbHelper = new ADBHelper("device123");
- * adbHelper.deviceControl.performAction(); // Control the device
- * adbHelper.appManagement.listAppActivities("com.example.app"); // List app activities
+ * adbHelper.deviceControl.checkDevice(); // Control the device
+ * adbHelper.appManagement.getCurrentScreenActivity(); // List app activities
  * adbHelper.screenInteractions.swipe(0, 0, 100, 100, 500); // Perform screen swipe
  * 
  * @property {DeviceControl} deviceControl Instance of the DeviceControl class, used to control the device.

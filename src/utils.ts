@@ -6,6 +6,7 @@ import {
 } from './types';
 
 export function ADBShell(command: string): Promise<ADBResponse> {
+  console.log(command)
   return new Promise((resolve, reject) => {
     exec(command, (error, stdout, stderr) => {
       if (error) {
@@ -34,13 +35,13 @@ export function getBatteryStatusString(statusCode: number): string {
 }
 export function getChargeStatus(pluggedCode: number): string {
   switch (pluggedCode) {
-      case 1:
-          return 'USB';
-      case 2:
-          return 'AC';
-      case 3:
-          return 'Wireless';
-      default:
-          return 'Not plugged';
+    case 1:
+      return 'USB';
+    case 2:
+      return 'AC';
+    case 3:
+      return 'Wireless';
+    default:
+      return 'Not plugged';
   }
 }

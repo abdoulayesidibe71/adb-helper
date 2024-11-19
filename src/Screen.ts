@@ -1,37 +1,36 @@
 import * as fs from 'fs';
 import { parseStringPromise } from 'xml2js';
 
-import CacheManagement from './CacheManagement';
-import {
-  ADBResponse,
-  UIHierarchy,
-} from './types';
-import { ADBShell } from './utils';
+import ADB from './ABD';
+import { SharedCacheManager } from './CacheManager';
+import { UIHierarchy } from './types';
 
 /**
- * Class that extends CacheManagement to manage various screen-related operations for Android devices.
+ * Class to manage various screen-related operations for Android devices.
  * This class includes methods for get screen hierarchy, find element on screen, get screen resolution and other actions related to screen.
  * It utilizes ADB commands to interact with Android devices and allows for easy management of screen-related tasks.
  * 
- * @extends CacheManagement
+
  * 
  * @note While this class can be used independently, it is primarily designed to be used as part of the ADBHelper class. 
  * When used within ADBHelper, it is instantiated and managed as part of the broader Android device screen.
  * 
  * @example
  * // Using Screen independently:
+ * const {Screen} = require('adb-helper');
  * const screenManager = new Screen('XXXXXXXXX');
- * await screenManager.getScreenResolution('');
+ * await screenManager.getScreenResolution();
  * 
  * @example
  * // Using Screen within ADBHelper:
+ * const {ADBHelper} = require('adb-helper');
  * const adbHelper = new ADBHelper("device123");
- * await adbHelper.screen.getScreenResolution('');
+ * await adbHelper.screen.getScreenResolution();
  */
-export default class Screen extends CacheManagement {
+export default class Screen extends ADB {
     private deviceId: string;
     constructor(deviceId: string) {
-        super()
+       super()
         this.deviceId = deviceId
     }
 
@@ -46,6 +45,8 @@ export default class Screen extends CacheManagement {
      * @returns {Promise<UIHierarchy[] | string>} A promise that resolves to the screen hierarchy in the specified format.
      * 
      * @example
+     * const {ADBHelper} = require('adb-helper');
+     * const adbHelper = new ADBHelper("device123");
      * const screenHierarchy = await adbHelper.screen.getScreenHierarchy('JSON');
      * console.log(screenHierarchy);
      */
@@ -53,9 +54,9 @@ export default class Screen extends CacheManagement {
         outputFormat: 'JSON' | 'XML' = 'JSON',
         outputFilePath?: string
     ): Promise<UIHierarchy[] | string> {
-        if (this.cachedScreenHierarchyValue) {
+        if (SharedCacheManager.getCachedScreenHierarchyValue) {
             console.log("Using cached screen hierarchy");
-            return this.cachedScreenHierarchyValue;
+            return SharedCacheManager.getCachedScreenHierarchyValue;
         }
 
         const hierarchyXML = await this.execCommand(`adb -s ${this.deviceId} exec-out uiautomator dump /dev/tty`);
@@ -92,7 +93,7 @@ export default class Screen extends CacheManagement {
             fs.writeFileSync(outputFilePath, JSON.stringify(elements, null, 2), 'utf8');
         }
 
-        this.cachedScreenHierarchyValue = elements;
+        SharedCacheManager.setCachedScreenHierarchyValue = elements;
         return elements;
     }
 
@@ -107,6 +108,8 @@ export default class Screen extends CacheManagement {
      * @returns {Promise<UIHierarchy | UIHierarchy[] | null>} A promise that resolves to the matched element(s), or null if no match is found.
      * 
      * @example
+     * const {ADBHelper} = require('adb-helper');
+     * const adbHelper = new ADBHelper("device123");
      * const conditions = { resourceId: "com.example:id/button" };
      * const element = await adbHelper.screen.findElement(conditions);
      * console.log(element);
@@ -116,9 +119,9 @@ export default class Screen extends CacheManagement {
         screenHierarchyJSON?: UIHierarchy[],
         attributes?: string[]
     ): Promise<UIHierarchy | UIHierarchy[] | null> {
-        if (this.cachedElementValue) {
+        if (SharedCacheManager.getCachedElementValue) {
             console.log("Using cached element");
-            return this.cachedElementValue;
+            return SharedCacheManager.getCachedElementValue;
         }
 
         const elements = screenHierarchyJSON || (await this.getScreenHierarchy('JSON') as UIHierarchy[]);
@@ -155,7 +158,7 @@ export default class Screen extends CacheManagement {
         const result = matchedElements.map(applyAttributesFilter);
 
         if (result.length === 1) {
-            this.cachedElementValue = result[0];
+            SharedCacheManager.setCachedElementValue = result[0];
             console.log("Element found:", result[0]);
             return result[0];
         }
@@ -172,13 +175,15 @@ export default class Screen extends CacheManagement {
      * @returns {Promise<{ width: number; height: number } | null>} A promise that resolves to the screen resolution or null if it couldn't be fetched.
      * 
      * @example
+     * const {ADBHelper} = require('adb-helper');
+     * const adbHelper = new ADBHelper("device123");
      * const resolution = await adbHelper.screen.getScreenResolution();
      * console.log(resolution); // { width: 1080, height: 1920 }
      */
     async getScreenResolution(): Promise<{ width: number; height: number } | null> {
-        if (this.cachedScreenResolution) {
+        if (SharedCacheManager.getCachedScreenResolutionValue) {
             console.log("Using cached screen resolution");
-            return this.cachedScreenResolution;
+            return SharedCacheManager.getCachedScreenResolutionValue;
         }
 
         try {
@@ -188,7 +193,7 @@ export default class Screen extends CacheManagement {
                 const width = parseInt(match[1], 10);
                 const height = parseInt(match[2], 10);
 
-                this.cachedScreenResolution = { width, height };
+                SharedCacheManager.setCachedScreenResolutionValue = { width, height };
                 console.log(`Screen resolution: ${width}x${height}`);
                 return { width, height };
             } else {
@@ -211,6 +216,8 @@ export default class Screen extends CacheManagement {
      * @returns {Promise<void>} A promise that resolves when the screen recording has started.
      * 
      * @example
+     * const {ADBHelper} = require('adb-helper');
+     * const adbHelper = new ADBHelper("device123");
      * await adbHelper.screen.startScreenRecording("/sdcard/myvideo.mp4", 30);
      * console.log("Recording started.");
      */
@@ -236,6 +243,8 @@ export default class Screen extends CacheManagement {
      * @returns {Promise<void>} A promise that resolves when the recording is stopped and the video file is retrieved.
      * 
      * @example
+     * const {ADBHelper} = require('adb-helper');
+     * const adbHelper = new ADBHelper("device123");
      * await adbHelper.screen.stopScreenRecording("/sdcard/myvideo.mp4", "./localvideo.mp4");
      * console.log("Recording stopped and video retrieved.");
      */
@@ -256,6 +265,8 @@ export default class Screen extends CacheManagement {
      * @returns A promise that resolves when dark mode is enabled.
      * @example
      * // Usage
+     * const {ADBHelper} = require('adb-helper');
+     * const adbHelper = new ADBHelper("device123");
      * await adbHelper.enableDarkMode();
      */
     async enableDarkMode(): Promise<void> {
@@ -274,6 +285,8 @@ export default class Screen extends CacheManagement {
      * @returns A promise that resolves when light mode is enabled.
      * @example
      * // Usage
+     * const {ADBHelper} = require('adb-helper');
+     * const adbHelper = new ADBHelper("device123");
      * await adbHelper.disableDarkMode();
      */
     async disableDarkMode(): Promise<void> {
@@ -292,6 +305,8 @@ export default class Screen extends CacheManagement {
      * @returns A promise that resolves when the display mode is set to follow system preferences.
      * @example
      * // Usage
+     * const {ADBHelper} = require('adb-helper');
+     * const adbHelper = new ADBHelper("device123");
      * await adbHelper.setSystemDefaultDisplayMode();
      */
     async setSystemDefaultDisplayMode(): Promise<void> {
@@ -310,6 +325,8 @@ export default class Screen extends CacheManagement {
      * @returns A promise that resolves when the orientation is changed.
      * @example
      * // Usage
+     * const {ADBHelper} = require('adb-helper');
+     * const adbHelper = new ADBHelper("device123");
      * await adbHelper.setLandscapeMode();
      */
     async setLandscapeMode(): Promise<void> {
@@ -329,6 +346,8 @@ export default class Screen extends CacheManagement {
      * @returns A promise that resolves when the orientation is changed.
      * @example
      * // Usage
+     * const {ADBHelper} = require('adb-helper');
+     * const adbHelper = new ADBHelper("device123");
      * await adbHelper.setPortraitMode();
      */
     async setPortraitMode(): Promise<void> {
@@ -349,6 +368,8 @@ export default class Screen extends CacheManagement {
  * @returns A promise that resolves to 'active' if the screen is on, 'inactive' if the screen is off.
  * @example
  * // Usage
+ * const {ADBHelper} = require('adb-helper');
+ * const adbHelper = new ADBHelper("device123");
  * const status = await adbHelper.checkScreenStatus();
  * console.log(status); // 'active' or 'inactive'
  */
@@ -375,6 +396,8 @@ export default class Screen extends CacheManagement {
      * @returns A promise that resolves to the screen density.
      * @example
      * // Usage
+     * const {ADBHelper} = require('adb-helper');
+     * const adbHelper = new ADBHelper("device123");
      * const density = await adbHelper.getScreenDensity();
      * console.log(`Screen density: ${density}`);
      */
@@ -399,6 +422,8 @@ export default class Screen extends CacheManagement {
      * @returns A promise that resolves when the screen density is modified.
      * @example
      * // Usage
+     * const {ADBHelper} = require('adb-helper');
+     * const adbHelper = new ADBHelper("device123");
      * await adbHelper.setScreenDensity(320); // Sets the screen density to 320
      */
     async setScreenDensity(density: number): Promise<void> {
@@ -413,9 +438,6 @@ export default class Screen extends CacheManagement {
             console.error("Error changing screen density:", error);
             throw error;
         }
-    }
-    private async execCommand(command: string): Promise<ADBResponse> {
-        return await ADBShell(command)
     }
 }
 

@@ -1,36 +1,40 @@
 {
-  "name": "adb-helper",
-  "version": "1.0.0",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "module": "dist/index.esm.js",
+  "name": "adb-test",
+  "version": "1.0.1",
+  "main": "./dist/ejc/index.js",
+  "types": "./dist/types/index.d.ts",
   "exports": {
-    ".": {
-      "import": "./dist/index.esm.js",
-      "require": "./dist/index.js"
-    }
+    "import": "./dist/esm/index.js",
+    "require": "./dist/cjs/index.js",
+    "default": "./dist/cjs/index.js"
   },
   "scripts": {
     "doc-generate-readme": "documentation build src/**/*.ts --format md --output README.md",
-    "generate-readme": "npx jsdoc -c jsdoc.json",
-    "build": "tsc",
-    "start": "ts-node src/index.ts",
-    "test": "jest"
+    "build": "tsc --project tsconfig.esm.json & tsc --project tsconfig.cjs.json",
+    "clean": "tsc --build --clean"
   },
   "keywords": [
     "adb",
     "android",
     "device control",
-    "adb-helper"
+    "adb-helper",
+    "android Debug Bridge",
+    "android studio"
   ],
   "author": "Abdoulaye SIDIBE",
-  "license": "ISC",
-  "description": "A library for interacting with Android devices via ADB.",
+  "contributors": [
+    {
+      "name": "Abdoulaye SIDIBE",
+      "email": "abdoulayesidibe.71.pro@gmail.com",
+      "url": "https://github.com/abdoulayesidibe71"
+    }
+  ],
+  "license": "MIT",
+  "description": "A library for interacting with Android devices via ADB(Android Debug Bridge).",
   "dependencies": {
     "@types/node": "^22.9.0",
     "child_process": "^1.0.2",
-    "express": "^4.21.1",
-    "fast-xml-parser": "^4.5.0",
+    "undici-types": "^6.21.0",
     "url": "^0.11.4",
     "xml2js": "^0.6.2"
   },
@@ -39,21 +43,19 @@
     "@types/xml2js": "^0.4.14",
     "documentation": "^14.0.3",
     "jest": "^29.7.0",
-    "jsdoc": "^4.0.4",
     "ts-jest": "^29.2.5",
     "tsx": "^4.19.2",
     "typescript": "^5.6.3"
   },
   "files": [
-    "dist/**/*",
-    "src/**/*"
+    "dist/**/*"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yourusername/adb-helper.git"
+    "url": "git+https://github.com/abdoulayesidibe71/adb-helper.git"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/adb-helper/issues"
+    "url": "https://github.com/abdoulayesidibe71/adb-helper/issues"
   },
-  "homepage": "https://github.com/yourusername/adb-helper#readme"
+  "homepage": "https://github.com/abdoulayesidibe71/adb-helper#readme"
 }

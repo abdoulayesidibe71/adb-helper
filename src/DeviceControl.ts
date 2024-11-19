@@ -1,9 +1,5 @@
-import CacheManagement from './CacheManagement';
-import { ADBResponse } from './types';
-import {
-  ADBShell,
-  getBatteryStatusString,
-} from './utils';
+import ADB from './ABD';
+import { getBatteryStatusString } from './utils';
 
 /**
  * Class to manage various device operations via ADB commands.
@@ -11,9 +7,7 @@ import {
  * This class provides methods for controlling and interacting with Android devices,
  * such as enabling/disabling airplane mode, performing factory resets, capturing system logs,
  * managing device volumes, and checking system settings like developer options and USB debugging and others.
- * It extends the `CacheManagement` class for cache handling capabilities.
- * 
- * @extends CacheManagement
+
  * 
  * @note Although this class can be used independently, it is primarily designed to be used as part of the ADBHelper class. 
  * When used within ADBHelper, it is instantiated and managed as part of the broader Android device control.
@@ -29,15 +23,16 @@ import {
  * 
  * @example
  * // Using DeviceControl within ADBHelper:
+ * const {ADBHelper} = require('adb-helper');
  * const adbHelper = new ADBHelper("device123");
  * const isDevelopmentEnabled = await adbHelper.deviceControl.checkDevelopmentSettings();
  * console.log(isDevelopmentEnabled);  // Logs true if development options are enabled
  */
-export class DeviceControl extends CacheManagement {
+export class DeviceControl extends ADB {
     private deviceId: string;
 
     constructor(deviceId: string) {
-        super();
+        super()
         this.deviceId = deviceId;
     }
 
@@ -53,6 +48,10 @@ export class DeviceControl extends CacheManagement {
      * 
      * @throws {Error} If an error occurs while executing the command or interacting 
      * with the device.
+     * 
+     * const {ADBHelper} = require('adb-helper');
+     * const adbHelper = new ADBHelper("device123");
+     * adbHelper.deviceControl.pressBack()
      */
     async pressBack(): Promise<void> {
         try {
@@ -75,6 +74,9 @@ export class DeviceControl extends CacheManagement {
      * 
      * @throws {Error} If an error occurs while executing the command or interacting 
      * with the device.
+     * const {ADBHelper} = require('adb-helper');
+     * const adbHelper = new ADBHelper("device123");
+     * adbHelper.deviceControl.pressHome()
      */
     async pressHome(): Promise<void> {
         try {
@@ -97,6 +99,9 @@ export class DeviceControl extends CacheManagement {
      * 
      * @throws {Error} If an error occurs while executing the command or interacting 
      * with the device.
+     * const {ADBHelper} = require('adb-helper');
+     * const adbHelper = new ADBHelper("device123");
+     * adbHelper.deviceControl.pressRecentApps()
      */
     async pressRecentApps(): Promise<void> {
         try {
@@ -119,11 +124,17 @@ export class DeviceControl extends CacheManagement {
      * the device status (e.g., "Device detected") or throws an error if the device is not detected.
      * 
      * @throws {Error} If there is an issue executing the command or if the device is not detected.
+     * 
+     * @example
+     * const {ADBHelper} = require('adb-helper');
+     * let adbHelper = new ADBHelper('deviceIdOrAnyValue');
+     * adbHelper.deviceControl.checkDevice()
      */
     async checkDevice(): Promise<string> {
         try {
             const status = await this.execCommand('adb devices');
-            if (status.includes(this.deviceId)) {
+            console.log(status)
+            if (status.includes("List of devices attached")) {
                 console.log("Device detected.", status);
                 return status;
             } else {
@@ -145,6 +156,10 @@ export class DeviceControl extends CacheManagement {
      * @returns {Promise<void>} A promise that resolves when the reboot command is successfully executed.
      * 
      * @throws {Error} If there is an issue executing the command or if the device cannot be rebooted.
+     * @example
+     * const {ADBHelper} = require('adb-helper');
+     * let adbHelper = new ADBHelper('deviceId');
+     * adbHelper.deviceControl.rebootDevice()
      */
     async rebootDevice(): Promise<void> {
         try {
@@ -170,7 +185,7 @@ export class DeviceControl extends CacheManagement {
      * 
      * @example
      * // Set the brightness to 255 (maximum brightness)
-     * import ADBHelper from 'ADBHelper';
+     * const {ADBHelper} = require('adb-helper');
      * let adbHelper = new ADBHelper('XXXXXXXXX');
      * await adbHelper.deviceControl.setBrightness(255);
      */
@@ -204,13 +219,13 @@ export class DeviceControl extends CacheManagement {
      * 
      * @example
      * // Enable auto-rotation
-     * import ADBHelper from 'ADBHelper';
+     * const {ADBHelper} = require('adb-helper');
      * let adbHelper = new ADBHelper('XXXXXXXXX');
      * await adbHelper.deviceControl.setAutoRotation(true);
      * 
      * @example
      * // Disable auto-rotation
-     * import ADBHelper from 'ADBHelper';
+     * const {ADBHelper} = require('adb-helper');
      * let adbHelper = new ADBHelper('XXXXXXXXX');
      * await adbHelper.deviceControl.setAutoRotation(false);
      */
@@ -243,7 +258,7 @@ export class DeviceControl extends CacheManagement {
      * 
      * @example
      * // Example of enabling USB debugging
-     * import ADBHelper from 'ADBHelper';
+     * const {ADBHelper} = require('adb-helper');
      * let adbHelper = new ADBHelper('XXXXXXXXX');
      * await adbHelper.deviceControl.enableUSBDebugging();
      */
@@ -272,7 +287,7 @@ export class DeviceControl extends CacheManagement {
      * 
      * @example
      * // Example of disabling developer mode
-     * import ADBHelper from 'ADBHelper';
+     * const {ADBHelper} = require('adb-helper');
      * let adbHelper = new ADBHelper('XXXXXXXXX');
      * await adbHelper.deviceControl.disableDeveloperMode();
      */
@@ -299,7 +314,7 @@ export class DeviceControl extends CacheManagement {
      * 
      * @example
      * // Example of checking Android version
-     * import ADBHelper from 'ADBHelper';
+     * const {ADBHelper} = require('adb-helper');
      * let adbHelper = new ADBHelper('XXXXXXXXX');
      * const androidVersion = await adbHelper.deviceControl.checkAndroidVersion();
      * console.log(`Android Version: ${androidVersion}`);
@@ -330,7 +345,7 @@ export class DeviceControl extends CacheManagement {
      * 
      * @example
      * // Example of checking battery status
-     * import ADBHelper from 'ADBHelper';
+     * const {ADBHelper} = require('adb-helper');
      * let adbHelper = new ADBHelper('XXXXXXXXX');
      * const batteryStatus = await adbHelper.deviceControl.getBatteryStatus();
      * console.log(`Battery Level: ${batteryStatus.level}%`);
@@ -388,7 +403,7 @@ export class DeviceControl extends CacheManagement {
      * 
      * @example
      * // Example of toggling mobile data
-     * import ADBHelper from 'ADBHelper';
+     * const {ADBHelper} = require('adb-helper');
      * let adbHelper = new ADBHelper('XXXXXXXXX');
      * await adbHelper.deviceControl.toggleMobileData(true);  // Enable mobile data
      * await adbHelper.deviceControl.toggleMobileData(false); // Disable mobile data
@@ -424,7 +439,7 @@ export class DeviceControl extends CacheManagement {
      * 
      * @example
      * // Example of toggling automatic synchronization
-     * import ADBHelper from 'ADBHelper';
+     * const {ADBHelper} = require('adb-helper');
      * let adbHelper = new ADBHelper('XXXXXXXXX');
      * await adbHelper.deviceControl.toggleSync(true);  // Enable automatic synchronization
      * await adbHelper.deviceControl.toggleSync(false); // Disable automatic synchronization
@@ -459,7 +474,7 @@ export class DeviceControl extends CacheManagement {
      * 
      * @example
      * // Example of toggling GPS (Location Services)
-     * import ADBHelper from 'ADBHelper';
+     * const {ADBHelper} = require('adb-helper');
      * let adbHelper = new ADBHelper('XXXXXXXXX');
      * await adbHelper.deviceControl.toggleGPS(true);  // Enable GPS
      * await adbHelper.deviceControl.toggleGPS(false); // Disable GPS
@@ -495,7 +510,7 @@ export class DeviceControl extends CacheManagement {
      * 
      * @example
      * // Example of toggling Wi-Fi
-     * import ADBHelper from 'ADBHelper';
+     * const {ADBHelper} = require('adb-helper');
      * let adbHelper = new ADBHelper('XXXXXXXXX');
      * await adbHelper.deviceControl.toggleWiFi(true);  // Enable Wi-Fi
      * await adbHelper.deviceControl.toggleWiFi(false); // Disable Wi-Fi
@@ -530,7 +545,7 @@ export class DeviceControl extends CacheManagement {
      * 
      * @example
      * // Example of toggling Bluetooth
-     * import ADBHelper from 'ADBHelper';
+     * const {ADBHelper} = require('adb-helper');
      * let adbHelper = new ADBHelper('XXXXXXXXX');
      * await adbHelper.deviceControl.toggleBluetooth(true);  // Enable Bluetooth
      * await adbHelper.deviceControl.toggleBluetooth(false); // Disable Bluetooth
@@ -565,7 +580,7 @@ export class DeviceControl extends CacheManagement {
      * 
      * @example
      * // Example of toggling airplane mode
-     * import ADBHelper from 'ADBHelper';
+     * const {ADBHelper} = require('adb-helper');
      * let adbHelper = new ADBHelper('XXXXXXXXX');
      * await adbHelper.deviceControl.toggleAirplaneMode(true);  // Enable airplane mode
      * await adbHelper.deviceControl.toggleAirplaneMode(false); // Disable airplane mode
@@ -599,7 +614,7 @@ export class DeviceControl extends CacheManagement {
      * 
      * @example
      * // Example of performing a factory reset
-     * import ADBHelper from 'ADBHelper';
+     * const {ADBHelper} = require('adb-helper');
      * let adbHelper = new ADBHelper('XXXXXXXXX');
      * await adbHelper.deviceControl.factoryReset();  // Perform factory reset
      */
@@ -626,7 +641,7 @@ export class DeviceControl extends CacheManagement {
      * 
      * @example
      * // Example of wiping user data
-     * import ADBHelper from 'ADBHelper';
+     * const {ADBHelper} = require('adb-helper');
      * let adbHelper = new ADBHelper('XXXXXXXXX');
      * await adbHelper.deviceControl.wipeUserData();  // Wipe user data
      */
@@ -653,7 +668,7 @@ export class DeviceControl extends CacheManagement {
      * 
      * @example
      * // Example of rebooting into recovery mode
-     * import ADBHelper from 'ADBHelper';
+     * const {ADBHelper} = require('adb-helper');
      * let adbHelper = new ADBHelper('XXXXXXXXX');
      * await adbHelper.deviceControl.rebootIntoRecovery();  // Reboot into recovery mode
      */
@@ -683,7 +698,7 @@ export class DeviceControl extends CacheManagement {
   * 
   * @example
   * // Example of changing language and region
-  * import ADBHelper from 'ADBHelper';
+  * const {ADBHelper} = require('adb-helper');
   * let adbHelper = new ADBHelper('XXXXXXXXX');
   * await adbHelper.deviceControl.changeLanguage('fr', 'FR');  // Change language to French and region to France
   */
@@ -712,7 +727,7 @@ export class DeviceControl extends CacheManagement {
      * 
      * @example
      * // Example of capturing the system log
-     * import ADBHelper from 'ADBHelper';
+     * const {ADBHelper} = require('adb-helper');
      * let adbHelper = new ADBHelper('XXXXXXXXX');
      * await adbHelper.deviceControl.captureSystemLog();  // Capture the system log
      */
@@ -749,7 +764,7 @@ export class DeviceControl extends CacheManagement {
   * 
   * @example
   * // Example of setting media volume to level 5
-  * import ADBHelper from 'ADBHelper';
+  * const {ADBHelper} = require('adb-helper');
   * let adbHelper = new ADBHelper('XXXXXXXXX');
   * await adbHelper.deviceControl.setMediaVolume(5);  // Set media volume to level 5
   */
@@ -778,7 +793,7 @@ export class DeviceControl extends CacheManagement {
      * 
      * @example
      * // Example of setting ringtone volume to level 8
-     * import ADBHelper from 'ADBHelper';
+     * const {ADBHelper} = require('adb-helper');
      * let adbHelper = new ADBHelper('XXXXXXXXX');
      * await adbHelper.deviceControl.setRingtoneVolume(8);  // Set ringtone volume to level 8
      */
@@ -807,7 +822,7 @@ export class DeviceControl extends CacheManagement {
      * 
      * @example
      * // Example of setting notification volume to level 7
-     * import ADBHelper from 'ADBHelper';
+     * const {ADBHelper} = require('adb-helper');
      * let adbHelper = new ADBHelper('XXXXXXXXX');
      * await adbHelper.deviceControl.setNotificationVolume(7);  // Set notification volume to level 7
      */
@@ -834,7 +849,7 @@ export class DeviceControl extends CacheManagement {
      * 
      * @example
      * // Example of enabling silent mode
-     * import ADBHelper from 'ADBHelper';
+     * const {ADBHelper} = require('adb-helper');
      * let adbHelper = new ADBHelper('XXXXXXXXX');
      * await adbHelper.deviceControl.enableSilentMode();  // Enable silent mode
      */
@@ -861,7 +876,7 @@ export class DeviceControl extends CacheManagement {
      * 
      * @example
      * // Example of disabling silent mode
-     * import ADBHelper from 'ADBHelper';
+     * const {ADBHelper} = require('adb-helper');
      * let adbHelper = new ADBHelper('XXXXXXXXX');
      * await adbHelper.deviceControl.disableSilentMode();  // Disable silent mode
      */
@@ -887,7 +902,7 @@ export class DeviceControl extends CacheManagement {
      * 
      * @example
      * // Example of enabling Do Not Disturb mode
-     * import ADBHelper from 'ADBHelper';
+     * const {ADBHelper} = require('adb-helper');
      * let adbHelper = new ADBHelper('XXXXXXXXX');
      * await adbHelper.deviceControl.enableDoNotDisturb();  // Enable Do Not Disturb mode
      */
@@ -913,7 +928,7 @@ export class DeviceControl extends CacheManagement {
      * 
      * @example
      * // Example of disabling Do Not Disturb mode
-     * import ADBHelper from 'ADBHelper';
+     * const {ADBHelper} = require('adb-helper');
      * let adbHelper = new ADBHelper('XXXXXXXXX');
      * await adbHelper.deviceControl.disableDoNotDisturb();  // Disable Do Not Disturb mode
      */
@@ -941,7 +956,7 @@ export class DeviceControl extends CacheManagement {
      * 
      * @example
      * // Example of setting the system time to "2024-11-16 15:30:00"
-     * import ADBHelper from 'ADBHelper';
+     * const {ADBHelper} = require('adb-helper');
      * let adbHelper = new ADBHelper('XXXXXXXXX');
      * await adbHelper.deviceControl.setSystemTime("2024-11-16 15:30:00");  // Set system time
      */
@@ -969,7 +984,7 @@ export class DeviceControl extends CacheManagement {
      * 
      * @example
      * // Example of setting the system time zone to "Asia/Kolkata"
-     * import ADBHelper from 'ADBHelper';
+     * const {ADBHelper} = require('adb-helper');
      * let adbHelper = new ADBHelper('XXXXXXXXX');
      * await adbHelper.deviceControl.setTimeZone("Asia/Kolkata");  // Set system time zone
      */
@@ -995,7 +1010,7 @@ export class DeviceControl extends CacheManagement {
      * 
      * @example
      * // Example of enabling auto time sync
-     * import ADBHelper from 'ADBHelper';
+     * const {ADBHelper} = require('adb-helper');
      * let adbHelper = new ADBHelper('XXXXXXXXX');
      * await adbHelper.deviceControl.enableAutoTimeSync();  // Enable automatic time sync
      */
@@ -1023,7 +1038,7 @@ export class DeviceControl extends CacheManagement {
   * 
   * @example
   * // Example of checking if developer options are enabled
-  * import ADBHelper from 'ADBHelper';
+  * const {ADBHelper} = require('adb-helper');
   * let adbHelper = new ADBHelper('XXXXXXXXX');
   * const isDevelopmentEnabled = await adbHelper.deviceControl.checkDevelopmentSettings();
   * console.log(isDevelopmentEnabled);  // Logs true if developer options are enabled
@@ -1051,7 +1066,7 @@ export class DeviceControl extends CacheManagement {
      * 
      * @example
      * // Example of checking if USB debugging is enabled
-     * import ADBHelper from 'ADBHelper';
+     * const {ADBHelper} = require('adb-helper');
      * let adbHelper = new ADBHelper('XXXXXXXXX');
      * const isAdbEnabled = await adbHelper.deviceControl.checkAdbSettings();
      * console.log(isAdbEnabled);  // Logs true if USB debugging is enabled
@@ -1077,7 +1092,4 @@ export class DeviceControl extends CacheManagement {
      * 
      * @returns {Promise<ADBResponse>} A promise that resolves with the response from the ADB shell.
      */
-    private async execCommand(command: string): Promise<ADBResponse> {
-        return await ADBShell(command);
-    }
 }

@@ -1,15 +1,15 @@
 // src/types.ts
 
-// Type pour les coordonnées de l'écran
- export interface Coordinates {
+// Type for screen coordinates
+export interface Coordinates {
   x: number;
   y: number;
 }
 
-// Type pour les retours des commandes ADB
-export type ADBResponse = string; // L'exécution d'une commande retourne généralement un texte
+// Type for ADB command responses
+export type ADBResponse = string; // Executing a command typically returns a text output
 
-// Type pour la hiérarchie de l'écran (extrait via `uiautomator dump`)
+// Type for the screen hierarchy (retrieved via `uiautomator dump`)
 export interface UIHierarchy {
   resourceId?: string;
   clickable?: boolean;
@@ -17,15 +17,16 @@ export interface UIHierarchy {
   class?: string;
   package?: string;
   bounds?: string;
-  [key: string]: any; // Permet d'ajouter d'autres attributs dynamiquement
+  [key: string]: any; // Allows dynamically adding other attributes
 }
 
-// Enum pour les erreurs ADB courantes
+// Enum for common ADB errors
 export enum ADBError {
   DEVICE_NOT_FOUND = "Device not found",
   COMMAND_FAILED = "Command execution failed"
 }
 
+// Enum for key codes used in ADB commands
 export enum KeyCode {
   BACK = '4',
   HOME = '3',
