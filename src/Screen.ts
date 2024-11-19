@@ -30,7 +30,7 @@ import { UIHierarchy } from './types';
 export default class Screen extends ADB {
     private deviceId: string;
     constructor(deviceId: string) {
-       super()
+        super()
         this.deviceId = deviceId
     }
 
@@ -128,7 +128,11 @@ export default class Screen extends ADB {
 
         const isMatching = (element: UIHierarchy) => {
             for (const [key, value] of Object.entries(conditions)) {
-                if (element[key] !== value) {
+                if (key === "resourceId") {
+                    if (element["resource-id"] !== value) {
+                        return false;
+                    }
+                } else if (element[key] !== value) {
                     return false;
                 }
             }

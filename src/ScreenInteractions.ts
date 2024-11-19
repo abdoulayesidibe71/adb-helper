@@ -1,4 +1,5 @@
 import ADB from './ABD';
+import { SharedCacheManager } from './CacheManager';
 import {
   KeyCode,
   UIHierarchy,
@@ -45,15 +46,20 @@ export class ScreenInteractions extends ADB {
    * const adbHelper = new ADBHelper("device123");
    * await adbHelper.screenInteraction.clickElement(element); // Clicks the element based on its bounds
    */
-  async clickElement(element: UIHierarchy): Promise<void> {
+  async clickElement(element?: UIHierarchy): Promise<void> {
     // Check if the element has a "bounds" attribute
-    if (!element.bounds) {
+    let elementToClick = element ? element : SharedCacheManager.getCachedElementValue
+    if(!elementToClick){
+      console.error("No element selected or cached element not found.");
+      return;
+    }
+    if (!elementToClick.bounds) {
       console.error("Element does not have defined coordinates.");
       return;
     }
 
     // Extract coordinates from the "bounds" attribute (format [x1,y1][x2,y2])
-    const bounds = element.bounds.match(/\[(\d+),(\d+)\]\[(\d+),(\d+)\]/);
+    const bounds = elementToClick.bounds.match(/\[(\d+),(\d+)\]\[(\d+),(\d+)\]/);
     if (!bounds) {
       console.error("Unable to extract coordinates from the 'bounds' attribute.");
       return;
