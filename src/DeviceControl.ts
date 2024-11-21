@@ -29,7 +29,7 @@ import { getBatteryStatusString } from './utils';
  * console.log(isDevelopmentEnabled);  // Logs true if development options are enabled
  */
 export class DeviceControl extends ADB {
-    private deviceId: string;
+    protected deviceId: string;
 
     constructor(deviceId: string) {
         super()
@@ -771,7 +771,7 @@ export class DeviceControl extends ADB {
     async setMediaVolume(volumeLevel: number): Promise<void> {
         try {
             // volumeLevel must be an integer between 0 (mute) and 15 (maximum volume)
-            const result = await this.execCommand(`adb -s ${this.deviceId} shell media volume --set ${volumeLevel}`);
+            await this.execCommand(`adb -s ${this.deviceId} shell media volume --set ${volumeLevel}`);
             console.log(`Media volume set to ${volumeLevel}`);
         } catch (error) {
             console.error("Error setting media volume:", error);
@@ -800,7 +800,7 @@ export class DeviceControl extends ADB {
     async setRingtoneVolume(volumeLevel: number): Promise<void> {
         try {
             // volumeLevel must be an integer between 0 (mute) and 15 (maximum volume)
-            const result = await this.execCommand(`adb -s ${this.deviceId} shell settings put system volume_ring ${volumeLevel}`);
+            await this.execCommand(`adb -s ${this.deviceId} shell settings put system volume_ring ${volumeLevel}`);
             console.log(`Ringtone volume set to ${volumeLevel}`);
         } catch (error) {
             console.error("Error setting ringtone volume:", error);
@@ -829,7 +829,7 @@ export class DeviceControl extends ADB {
     async setNotificationVolume(volumeLevel: number): Promise<void> {
         try {
             // volumeLevel must be an integer between 0 (mute) and 15 (maximum volume)
-            const result = await this.execCommand(`adb -s ${this.deviceId} shell settings put system volume_notification ${volumeLevel}`);
+            await this.execCommand(`adb -s ${this.deviceId} shell settings put system volume_notification ${volumeLevel}`);
             console.log(`Notification volume set to ${volumeLevel}`);
         } catch (error) {
             console.error("Error setting notification volume:", error);
@@ -856,7 +856,7 @@ export class DeviceControl extends ADB {
     async enableSilentMode(): Promise<void> {
         try {
             // Command to activate silent mode
-            const result = await this.execCommand(`adb -s ${this.deviceId} shell am broadcast -a android.intent.action.MUTE_AUDIO`);
+            await this.execCommand(`adb -s ${this.deviceId} shell am broadcast -a android.intent.action.MUTE_AUDIO`);
             console.log("Silent mode enabled");
         } catch (error) {
             console.error("Error enabling silent mode:", error);
@@ -883,7 +883,7 @@ export class DeviceControl extends ADB {
     async disableSilentMode(): Promise<void> {
         try {
             // Command to deactivate silent mode
-            const result = await this.execCommand(`adb -s ${this.deviceId} shell am broadcast -a android.intent.action.UNMUTE_AUDIO`);
+           await this.execCommand(`adb -s ${this.deviceId} shell am broadcast -a android.intent.action.UNMUTE_AUDIO`);
             console.log("Silent mode disabled");
         } catch (error) {
             console.error("Error disabling silent mode:", error);
@@ -909,7 +909,7 @@ export class DeviceControl extends ADB {
     async enableDoNotDisturb(): Promise<void> {
         try {
             // Command to activate Do Not Disturb mode
-            const result = await this.execCommand(`adb -s ${this.deviceId} shell settings put global zen_mode 1`);
+            await this.execCommand(`adb -s ${this.deviceId} shell settings put global zen_mode 1`);
             console.log("Do Not Disturb mode enabled");
         } catch (error) {
             console.error("Error enabling Do Not Disturb mode:", error);
@@ -935,7 +935,7 @@ export class DeviceControl extends ADB {
     async disableDoNotDisturb(): Promise<void> {
         try {
             // Command to deactivate Do Not Disturb mode
-            const result = await this.execCommand(`adb -s ${this.deviceId} shell settings put global zen_mode 0`);
+           await this.execCommand(`adb -s ${this.deviceId} shell settings put global zen_mode 0`);
             console.log("Do Not Disturb mode disabled");
         } catch (error) {
             console.error("Error disabling Do Not Disturb mode:", error);
@@ -963,7 +963,7 @@ export class DeviceControl extends ADB {
     async setSystemTime(date: string): Promise<void> {
         try {
             // `date` should be in the format "YYYY-MM-DD HH:MM:SS"
-            const result = await this.execCommand(`adb -s ${this.deviceId} shell date -s "${date}"`);
+            await this.execCommand(`adb -s ${this.deviceId} shell date -s "${date}"`);
             console.log(`System time set to ${date}`);
         } catch (error) {
             console.error("Error setting system time:", error);
@@ -991,7 +991,7 @@ export class DeviceControl extends ADB {
     async setTimeZone(timeZone: string): Promise<void> {
         try {
             // Set the system time zone
-            const result = await this.execCommand(`adb -s ${this.deviceId} shell setprop persist.sys.timezone ${timeZone}`);
+         await this.execCommand(`adb -s ${this.deviceId} shell setprop persist.sys.timezone ${timeZone}`);
             console.log(`System time zone set to ${timeZone}`);
         } catch (error) {
             console.error("Error setting time zone:", error);
@@ -1017,7 +1017,7 @@ export class DeviceControl extends ADB {
     async enableAutoTimeSync(): Promise<void> {
         try {
             // Command to enable automatic time synchronization
-            const result = await this.execCommand(`adb -s ${this.deviceId} shell settings put global auto_time 1`);
+            await this.execCommand(`adb -s ${this.deviceId} shell settings put global auto_time 1`);
             console.log("Auto time synchronization enabled");
         } catch (error) {
             console.error("Error enabling auto time sync:", error);

@@ -25,7 +25,7 @@ import { UIAttributes } from './UIAttributes';
  * @property {UIAttributes} uiAttributes Instance of the UIAttributes class, used to interact with UI elements.
  */
 export default class ADBHelper extends ADB {
-  private deviceId: string;
+  protected deviceId: string;
   public deviceControl: DeviceControl;
   public appManagement: AppManagement;
   public screenInteractions: ScreenInteractions;

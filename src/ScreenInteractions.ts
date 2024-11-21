@@ -30,7 +30,7 @@ import {
  * await adbHelper.screenInteractions.takeScreenshot('/path/to/screenshot.png');
  */
 export class ScreenInteractions extends ADB {
-  private deviceId: string;
+  protected deviceId: string;
 
   constructor(deviceId: string) {
     super()

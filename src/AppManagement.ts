@@ -30,7 +30,7 @@ import { SharedCacheManager } from './CacheManager';
  * const activities = await adbHelper.appManagement.getCurrentScreenActivity('');
  */
 export class AppManagement extends ADB{
-    private deviceId: string;
+    protected deviceId: string;
     constructor(deviceId: string) {
         super()
         this.deviceId = deviceId;
@@ -762,7 +762,7 @@ export class AppManagement extends ADB{
     /**
      * List the processes running on the Android device.
      */
-    async listProcesses(): Promise<void> {
+    async listProcesses(): Promise<string | null> {
         try {
             // Execute the adb command to list the running processes
             const result = await this.execCommand("adb shell ps -A");
@@ -771,8 +771,10 @@ export class AppManagement extends ADB{
 
             // Display the retrieved processes
             console.log(result);
+            return result
         } catch (error) {
             console.error("Error retrieving the list of running processes:", error);
+            throw error
         }
     }
 }

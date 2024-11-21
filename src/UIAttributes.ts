@@ -39,7 +39,7 @@ export interface UIHierarchy {
  * await adbHelper.uiAttributes.isCheckable(;
  */
 export class UIAttributes extends ADB {
-  private deviceId: string;
+  protected deviceId: string;
   constructor(deviceId: string) {
     super()
     this.deviceId = deviceId;

@@ -1,16 +1,24 @@
 {
   "name": "adb-helper",
-  "version": "1.0.1",
-  "main": "./dist/ejc/index.js",
-  "types": "./dist/types/index.d.ts",
+  "version": "1.0.2",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/types/index.d.ts",
   "exports": {
-    "import": "./dist/esm/index.js",
-    "require": "./dist/cjs/index.js",
-    "default": "./dist/cjs/index.js"
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "require": "./dist/cjs/index.js",
+      "import": "./dist/esm/index.js",
+      "default": "./dist/esm/index.js"
+    }
   },
   "scripts": {
+    "start-ts": "npx tsx index.ts",
+    "start-js": "node index.js",
     "doc-generate-readme": "documentation build src/**/*.ts --format md --output README.md",
-    "build": "tsc --project tsconfig.esm.json & tsc --project tsconfig.cjs.json",
+    "transpile": "tsc --project tsconfig.esm.json & tsc --project tsconfig.cjs.json & tsc --project tsconfig.types.json",
+    "fix": "tsc-esm-fix --src='dist/esm/src/**/*.js' --ext='.js'",
+    "build": "npm run transpile && npm run fix",
     "clean": "tsc --build --clean"
   },
   "keywords": [
