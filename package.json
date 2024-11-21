@@ -1,8 +1,8 @@
 {
   "name": "adb-helper",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "changelog": {
-    "1.0.2": "Updated README with detailed import instructions for TypeScript and JavaScript projects. Added instructions for using tsx to run TypeScript files in development environments. Clarified usage of require and import based on module type in TypeScript and JavaScript."
+    "1.0.3": "Updated README with detailed import instructions for TypeScript and JavaScript projects. Added instructions for using tsx to run TypeScript files in development environments. Clarified usage of require and import based on module type in TypeScript and JavaScript."
   },
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",

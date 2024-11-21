@@ -105,8 +105,6 @@ With **ADBHelper**, managing your Android devices via ADB becomes faster and mor
 
 --- 
 
-Let me know if you’d like further refinements! 😊
-
 ### Table of Contents
 
 *   [ADB][1]
