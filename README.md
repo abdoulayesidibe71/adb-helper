@@ -78,10 +78,8 @@ adbhelper.deviceControl.checkDevice();
 
 ### **Usage Example with ES Modules**
 
-```javascript
-import pkg from 'adb-helper';
-const { ADBHelper } = pkg;
-
+```Typescript
+import { ADBHelper } from 'adb-helper';
 // Replace "XXXXXXXXXX" with the device ID of your Android device.
 let deviceId = "XXXXXXXXXX";
 
